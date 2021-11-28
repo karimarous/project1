@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Confirm apply workflow
-      run: if [${{ github.event.inputs.CONFIRM }} == no] ; then exit 1 fi
-    - name: Checkout Repository
+      run: if [${{ github.event.inputs.CONFIRM }} == no] ; then exit 1 else echo "go" fi
+    - name: Checkout Repository 
       uses: actions/checkout@v1
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
