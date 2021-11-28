@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Confirm apply workflow
-      if: ${{ github.event.inputs.CONFIRM =="yes" }}
+      if: ${{ github.event.inputs.CONFIRM }} == "yes"
       uses: actions/checkout@v1
     - name: Checkout Repository
       uses: actions/checkout@v1
