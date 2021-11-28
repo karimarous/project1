@@ -39,7 +39,7 @@ jobs:
       working-directory: ./
     - name: Terraform apply AWS
       run: terraform  apply  -auto-approve
-      working-directory: ./
+      working-directory: ./ 
     
 
    
