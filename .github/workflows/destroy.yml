@@ -1,11 +1,11 @@
-name: Terraform apply 
+name: Terraform destroy 
 on:
   workflow_dispatch:
     branches:
       - main
     inputs:
       CONFIRM:
-        description: 'Are you sure you want to provision all the ressoures? (yes,no)'
+        description: 'Are you sure you want to destroy all the ressoures? (yes,no)'
         required: true
 jobs:
   terraform-actions:
@@ -13,8 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Confirm destroy workflow
-      if: ${{ github.event.inputs.CONFIRM }} == no
-      run: exit 1
+      run: |
+          if [${{ github.event.inputs.CONFIRM }} == no]; then
+              exit 1
+          else
+              echp "Destroying of the resources confirmed"
+          fi
 
     - name: Checkout Repository
       uses: actions/checkout@v1
