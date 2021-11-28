@@ -1,0 +1,38 @@
+name: Terraform apply 
+on:
+  workflow_dispatch:
+    branches:
+      - main
+    inputs:
+      CONFIRM:
+        description: 'Are you sure you want to provision all the ressoures? (yes,no)'
+        required: true
+jobs:
+  terraform-actions:
+    name: Workflow apply
+    runs-on: ubuntu-latest
+    steps:
+    - name: Confirm destroy workflow
+      if: ${{ github.event.inputs.CONFIRM =="yes" }}
+      uses: actions/checkout@v1
+    - name: Checkout Repository
+      uses: actions/checkout@v1
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ github.event.inputs.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ github.event.inputs.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ github.event.inputs.AWS_SESSION_TOKEN }}
+        aws-region: ${{ secrets.AWS_REGION }} 
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@v1
+    - name: Terraform fmt
+      run: terraform fmt
+      working-directory: ./
+      continue-on-error: true
+    - name: Terraform init 
+      run: terraform  init -backend-config "bucket=${{ secrets.AWS_BUCKET_NAME }}" -backend-config "region=${{ secrets.AWS_REGION }}" -backend-config "key=${{ secrets.AWS_BUCKET_key }}"     
+      working-directory: ./
+    - name: Terraform destroy AWS
+      run: terraform destroy -auto-approve -var "subnet_id=${{ secrets.SUBNET_ID }}" -var "security_group_id=${{ secrets.SECURITY_GROUP_ID }}"
+      working-directory: ./
